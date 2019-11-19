@@ -1,9 +1,12 @@
 import React from 'react';
+import EmployeeManager from './EmployeeManager'
+
 
 function App() {
   return (
     <div>
-      Empty App
+    <EmployeeManager />
+
     </div>
   );
 }
