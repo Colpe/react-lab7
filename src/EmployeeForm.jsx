@@ -7,42 +7,37 @@ class EmployeeForm extends React.Component {
         this.state = {
             name: "",
             age: 20,
-            isActive: true,
-            company: "",
             email: "",
-            loading: false,
             parentName: "",
-            parentPhoneNumber: ""
+            parentPhoneNumber: "",
+            errors: {
+                isParentPhoneNumberValid: true,
+                isEmailValid: true
+            }
         }
     }
+    phoneNumberValidation = () => {
+        return this.state.parentPhoneNumber.length === 9 && this.state.parentPhoneNumber.match("[0-9]{9}").length === 1;
+    }
+    
+    emailValidation = () => {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(this.state.email).toLowerCase());
+    }
 
-    createNewEmoplyee = () => {
-        console.log("creation")
-        // this.setState({
-        //     loading: true
-        // })
-        // const employee = {
-        //     name: this.state.name,
-        //     age: this.state.age,
-        //     isActive: this.state.isActive,
-        //     company: this.state.company,
-        //     email: this.state.email,
-        //     parentName: "",
-        //     parentPhoneNumber: ""
-        // }
 
-        // fetch('http://localhost:3000/employees', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         'Accept': 'application/json'
-        //     },
-        //     body: JSON.stringify(employee)
-        // })
-        //     .then(response => {
-        //         response.json();
-        //         this.props.returnToList();
-        //     })
+    createNewEmoplyee = (e) => {
+        e.preventDefault();
+        let v = this.state.errors;
+
+        if (this.state.age >= 18)
+            v.isEmailValid = this.emailValidation();
+        else
+            v.isParentPhoneNumberValid = this.phoneNumberValidation();
+
+        this.setState({
+            errors: v
+        });
     }
 
     render() {
@@ -67,6 +62,7 @@ class EmployeeForm extends React.Component {
                             <div className="row">
                                 <label>Parent Phone No.</label>
                                 <input style={{ margin: "10px" }} onChange={(e) => { this.setState({ parentPhoneNumber: e.target.value }) }} />
+                                <span>{this.state.errors.isParentPhoneNumberValid ? "" : "Parent phone number is not valid!"}</span>
                             </div>
                         </div>
                     }
@@ -79,6 +75,7 @@ class EmployeeForm extends React.Component {
                             <div className="row">
                                 <label>Email</label>
                                 <input style={{ margin: "10px" }} onChange={(e) => { this.setState({ email: e.target.value }) }} />
+                                <span>{this.state.errors.isEmailValid ? "" : "Email is not valid!"}</span>
                             </div>
                         </div>
                     }
